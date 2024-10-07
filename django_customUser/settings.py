@@ -40,6 +40,9 @@ INSTALLED_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
 
+    # Swagger
+    'drf_yasg',
+
     # AllAuth Settings
     'allauth',
     'allauth.account',
@@ -140,6 +143,11 @@ REST_FRAMEWORK = {
     # Default Date and Time format
     'DATETIME_FORMAT': "%d-%b-%Y, %a %I:%M %p",
     'DATE_FORMAT': '%d-%b-%Y',
+
+    # Swagger Permission 
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
 }
 
 # Allauth settings
