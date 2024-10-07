@@ -7,15 +7,6 @@ from user_management.models import CustomUser
 
 
 # Register your models here.
-# app = apps.get_app_config("user_management")
-#
-# for model in app.get_models():
-#     try:
-#         admin.site.register(model)
-#     except admin.sites.AlreadyRegistered:
-#         pass
-
-# Register your models here.
 class CustomUserAdmin(UserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
