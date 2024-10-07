@@ -39,6 +39,10 @@ INSTALLED_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
+
+    # AllAuth Settings
+    'allauth',
+    'allauth.account',
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
@@ -57,6 +61,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # AllAuth account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'django_customUser.urls'
@@ -135,3 +141,14 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': "%d-%b-%Y, %a %I:%M %p",
     'DATE_FORMAT': '%d-%b-%Y',
 }
+
+# Allauth settings
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]
