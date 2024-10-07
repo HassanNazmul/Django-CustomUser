@@ -128,6 +128,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'user_management.CustomUser'
+
 REST_FRAMEWORK = {
     # Default Date and Time format
     'DATETIME_FORMAT': "%d-%b-%Y, %a %I:%M %p",
