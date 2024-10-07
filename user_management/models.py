@@ -1,4 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
 from django.db import models
 
 
@@ -15,9 +18,12 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_admin', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
+        if extra_fields.get('is_admin') is not True:
+            raise ValueError('Superuser must have is_admin=True.')
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
@@ -29,14 +35,49 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=60)
+    password = models.CharField(max_length=255)
+
+    # Role differentiation
+    is_student = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+
+    # Permission-related fields
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+
     date_joined = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name']
+    REQUIRED_FIELDS = ['full_name', 'password']
 
     objects = CustomUserManager()
+
+    def clean(self):
+        # Validate the conditions before saving
+        if self.is_student and (self.is_admin or self.is_staff):
+            raise ValidationError("A student cannot be an admin or staff.")
+
+        if self.is_admin and self.is_student:
+            raise ValidationError("An admin cannot be a student.")
+
+        if self.is_admin and not self.is_staff:
+            raise ValidationError("An admin must also be staff.")
+
+    def save(self, *args, **kwargs):
+        # Automatically activate the user if any permission field is selected
+        if self.is_superuser or self.is_staff or self.is_admin:
+            self.is_active = True
+        else:
+            self.is_active = False
+
+        # Enforce role constraints
+        if self.is_student:
+            self.is_admin = False
+            self.is_staff = False
+
+        if self.is_admin:
+            self.is_staff = True
+            self.is_student = False
 
     def __str__(self):
         return self.email
