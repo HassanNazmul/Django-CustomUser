@@ -35,7 +35,6 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=60)
-    password = models.CharField(max_length=255)
 
     # Role differentiation
     is_student = models.BooleanField(default=False)
@@ -48,7 +47,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name', 'password']
+    REQUIRED_FIELDS = ['full_name']
 
     objects = CustomUserManager()
 
@@ -56,9 +55,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         # Validate the conditions before saving
         if self.is_student and (self.is_admin or self.is_staff):
             raise ValidationError("A student cannot be an admin or staff.")
-
-        if self.is_admin and self.is_student:
-            raise ValidationError("An admin cannot be a student.")
 
         if self.is_admin and not self.is_staff:
             raise ValidationError("An admin must also be staff.")
@@ -78,6 +74,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         if self.is_admin:
             self.is_staff = True
             self.is_student = False
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.email
