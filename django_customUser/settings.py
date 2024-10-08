@@ -39,11 +39,24 @@ INSTALLED_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
+    'rest_framework.authtoken',
+
+    # dj-rest-auth
+    'dj_rest_auth',
+
+    # allAuth Config for dj-rest-auth
+    # 'django.contrib.sites',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'dj_rest_auth.registration',
 
     # Swagger
     'drf_yasg',
 
 ]
+
+# SITE_ID = 1
 
 INSTALLED_APPS += THIRD_PARTY_APPS
 
@@ -61,6 +74,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # AllAuth account middleware:
+    # "allauth.account.middleware.AccountMiddleware",
 
 ]
 

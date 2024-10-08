@@ -23,6 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('user_management.urls')),
 
+    # dj-rest-auth
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    # path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+
     # Swagger URLS
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api_v1/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
