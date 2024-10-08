@@ -43,9 +43,6 @@ THIRD_PARTY_APPS = [
     # Swagger
     'drf_yasg',
 
-    # AllAuth Settings
-    'allauth',
-    'allauth.account',
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS
@@ -64,8 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # AllAuth account middleware:
-    "allauth.account.middleware.AccountMiddleware",
+
 ]
 
 ROOT_URLCONF = 'django_customUser.urls'
@@ -154,14 +150,3 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ),
 }
-
-# Allauth settings
-AUTHENTICATION_BACKENDS = [
-
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by email
-    'allauth.account.auth_backends.AuthenticationBackend',
-
-]
