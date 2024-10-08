@@ -137,7 +137,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'user_management.CustomUser'
+AUTH_USER_MODEL = 'user_management.CustomUser'  # Specifies the custom user model used for authentication
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # Disables the use of usernames in the user model
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Specifies that authentication will be performed using email addresses
+ACCOUNT_EMAIL_REQUIRED = True  # Requires that users provide an email address for authentication
+ACCOUNT_USERNAME_REQUIRED = False  # Indicates that a username is not required during account creation
 
 REST_FRAMEWORK = {
     # Default Date and Time format

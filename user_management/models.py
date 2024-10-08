@@ -61,7 +61,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         # Automatically activate the user if any permission field is selected
-        if self.is_superuser or self.is_staff or self.is_admin:
+        if self.is_superuser or self.is_staff or self.is_admin or self.is_student:
             self.is_active = True
         else:
             self.is_active = False
@@ -74,6 +74,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         if self.is_admin:
             self.is_staff = True
             self.is_student = False
+
+        if self.is_superuser:
+            self.is_admin = True
+            self.is_staff = True
 
         super().save(*args, **kwargs)
 

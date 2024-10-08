@@ -1,17 +1,47 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
-from rest_framework.response import Response
-from .models import CustomUser
-from .serializers import CustomUserSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
+
+from user_management.models import CustomUser
+from user_management.serializers import CustomUserSerializer, CustomUserRestrictedUpdateSerializer
 
 
-# Create your views here.
-class CustomUserViewSet(viewsets.ReadOnlyModelViewSet):
+class CustomUserViewSet(viewsets.ModelViewSet):
+    """
+    A viewset that provides the ability to list, retrieve, create, update, and delete users.
+    """
     queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        # Restrict listing to admin and staff users only
+        if not self.request.user.is_admin and not self.request.user.is_staff:
+            # Allow students to only see their own information
+            return CustomUser.objects.filter(id=self.request.user.id)
+        return super().get_queryset()
+
+    def get_serializer_class(self):
+        # Use a serializer that restricts email update for students
+        if self.action in ['update', 'partial_update'] and not (
+                self.request.user.is_admin or self.request.user.is_staff):
+            return CustomUserRestrictedUpdateSerializer
+        return CustomUserSerializer
+
+    def perform_create(self, serializer):
+        # Allow only admin and staff users to create users
+        if not (self.request.user.is_admin or self.request.user.is_staff):
+            raise ValidationError("You do not have permission to create a user.")
+        serializer.save()
+
+    def perform_update(self, serializer):
+        # Allow only admin and staff users to update users, but allow students to update their own details
+        if not (self.request.user.is_admin or self.request.user.is_staff):
+            if self.request.user != serializer.instance:
+                raise ValidationError("You do not have permission to update this user.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        # Allow only admin and staff users to delete users
+        if not (self.request.user.is_admin or self.request.user.is_staff):
+            raise ValidationError("You do not have permission to delete a user.")
+        instance.delete()
