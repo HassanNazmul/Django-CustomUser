@@ -51,6 +51,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
+    # Set verbose_name for your model
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users List"
+
     def clean(self):
         # Validate the conditions before saving
         if self.is_student and (self.is_admin or self.is_staff):

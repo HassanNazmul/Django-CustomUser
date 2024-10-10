@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
+    "corsheaders",
 
     # dj-rest-auth
     'dj_rest_auth',
@@ -76,7 +77,34 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # AllAuth account middleware:
     # "allauth.account.middleware.AccountMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 
+]
+
+# CORS settings for handling requests from frontend to backend
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # Your React frontend origin
+]
+
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'x-requested-with',
+    'authorization',
+    'accept',
+    'origin',
+    'x-csrftoken',
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 ROOT_URLCONF = 'django_customUser.urls'
