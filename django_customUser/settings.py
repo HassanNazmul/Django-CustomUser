@@ -82,8 +82,8 @@ MIDDLEWARE = [
 
 ]
 
-# CORS settings for handling requests from frontend to backend
-CORS_ALLOW_CREDENTIALS = True
+# # CORS settings for handling requests from frontend to backend
+# CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Your React frontend origin
@@ -183,13 +183,23 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Specifies that authentication will be
 ACCOUNT_EMAIL_REQUIRED = True  # Requires that users provide an email address for authentication
 ACCOUNT_USERNAME_REQUIRED = False  # Indicates that a username is not required during account creation
 
+TOKEN_EXPIRE_AFTER_SECONDS = 3600  # Example, 1 hour token lifetime
+
 REST_FRAMEWORK = {
     # Default Date and Time format
     'DATETIME_FORMAT': "%d-%b-%Y, %a %I:%M %p",
     'DATE_FORMAT': '%d-%b-%Y',
 
-    # Swagger Permission 
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',  # Requires users to be authenticated
     ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',  # Use token authentication
+        'rest_framework.authentication.SessionAuthentication',  # Optional: session-based auth
+    ),
+
+    'DEFAULT_THROTTLE_RATES': {
+        'login': '5/min',  # Limit login attempts to 5 per minute
+        'password_reset': '3/min',  # Limit password reset requests
+    }
 }

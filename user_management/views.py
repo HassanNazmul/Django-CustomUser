@@ -1,3 +1,4 @@
+from dj_rest_auth.views import LoginView
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
@@ -45,3 +46,25 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         if not (self.request.user.is_admin or self.request.user.is_staff):
             raise ValidationError("You do not have permission to delete a user.")
         instance.delete()
+
+
+class CustomLoginView(LoginView):
+    def get_response(self):
+        # Get the default response from the LoginView
+        original_response = super().get_response()
+
+        # Get the logged-in user
+        user = self.user
+
+        # Add custom fields (roles) to the response
+        custom_data = {
+            'is_admin': user.is_admin,
+            'is_staff': user.is_staff,
+            'is_superuser': user.is_superuser,
+        }
+
+        # Update the original response data with the new fields
+        original_response.data.update(custom_data)
+
+        # Return the modified response with roles
+        return original_response

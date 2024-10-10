@@ -18,10 +18,14 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 
 from django_customUser.swagger import schema_view
+from user_management.views import CustomLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('user_management.urls')),
+
+    path('dj-rest-auth/login/',
+         CustomLoginView.as_view(), name='custom_login'),
 
     # dj-rest-auth
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
