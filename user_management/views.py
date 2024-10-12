@@ -58,9 +58,7 @@ class CustomLoginView(LoginView):
 
         # Add custom fields (roles) to the response
         custom_data = {
-            'is_admin': user.is_admin,
-            'is_staff': user.is_staff,
-            'is_superuser': user.is_superuser,
+            'is_student': user.is_student,
         }
 
         # Update the original response data with the new fields
